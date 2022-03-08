@@ -5,6 +5,8 @@ import TextField from '@mui/material/TextField';
 function InputField(props) {
   const { field, form, label, type, autoComplete, autoFocus } = props;
   const { name } = field;
+  const { errors, touched } = form;
+  const showError = errors[name] && touched[name];
   return (
     <TextField
       {...field}
@@ -15,6 +17,8 @@ function InputField(props) {
       type={type}
       autoComplete={autoComplete}
       autoFocus={autoFocus}
+      error={showError}
+      helperText={showError ? errors[name] : ''}
     />
   );
 }

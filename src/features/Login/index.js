@@ -1,41 +1,53 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import LoginIcon from '@mui/icons-material/Login';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Alert, AlertTitle } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Formik, Form, FastField } from 'formik';
+import Typography from '@mui/material/Typography';
+import { FastField, Form, Formik } from 'formik';
+import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import CheckBoxField from '../../components/CheckBoxField';
 import InputField from '../../components/InputField';
-import * as Yub from 'yub';
-
+import useLogin from '../../hooks/useLogin';
+import { userSelector } from '../../redux/selectors';
 const theme = createTheme();
 
 function index() {
+  const user = useSelector(userSelector);
   const initialValues = {
     username: '',
     password: '',
+    remember: false,
   };
-  // const validationSchema = Yub.object().shape({
-  //   username: Yub.string().required('Vui lòng nhập tên đăng nhập'),
+  const validationSchema = Yup.object().shape({
+    username: Yup.string().required('Vui lòng nhập tên tài khoản'),
 
-  //   password: Yub.string().required('Vui lòng nhập mật khẩu'),
-  // });
+    password: Yup.string().required('Vui lòng nhập mật khẩu'),
+
+    remember: Yup.boolean(),
+  });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleSubmit = (data) => {
+    useLogin(data, dispatch, navigate);
+  };
   return (
     <Formik
       initialValues={initialValues}
-      // validationSchema={validationSchema}
-      onSubmit={(values) => console.log('Submit: ', values)}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
     >
       {(formikProps) => {
         const { values, errors, touched } = formikProps;
-        console.log({ values, errors, touched });
         return (
           <ThemeProvider theme={theme}>
             <Container component='main' maxWidth='xs'>
@@ -52,47 +64,61 @@ function index() {
                   <LockOutlinedIcon />
                 </Avatar>
                 <Typography component='h1' variant='h5'>
-                  Sign in
+                  Đăng nhập
                 </Typography>
+                {user.error && (
+                  <Alert
+                    severity='error'
+                    sx={{
+                      width: '100%',
+                    }}
+                  >
+                    <AlertTitle>{user.error}</AlertTitle>
+                  </Alert>
+                )}
                 <Form>
                   <FastField
                     name='username'
                     component={InputField}
-                    label='Username'
+                    label='Tài khoản'
                     autoFocus
-                    autoComplete='email'
+                    autoComplete='username'
                   />
 
                   <FastField
                     name='password'
                     component={InputField}
-                    label='password'
-                    autoFocus
+                    label='Mật khẩu'
                     type='password'
                     autoComplete='current-password'
                   />
-
-                  <FormControlLabel
-                    control={<Checkbox value='remember' color='primary' />}
-                    label='Remember me'
+                  <FastField
+                    name='remember'
+                    component={CheckBoxField}
+                    label='Ghi nhớ'
+                    color='primary'
                   />
-                  <Button
+                  <LoadingButton
                     type='submit'
                     fullWidth
                     variant='contained'
                     sx={{ mt: 3, mb: 2 }}
+                    loading={user.isLoading}
+                    loadingPosition='end'
+                    endIcon={<LoginIcon />}
                   >
-                    Sign In
-                  </Button>
+                    Đăng nhập
+                  </LoadingButton>
+
                   <Grid container>
                     <Grid item xs>
                       <Link href='#' variant='body2'>
-                        Forgot password?
+                        Quên mật khẩu?
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href='#' variant='body2'>
-                        {"Don't have an account? Sign Up"}
+                        {'Chưa có tài khoản? Đăng kí ngay'}
                       </Link>
                     </Grid>
                   </Grid>
@@ -105,7 +131,5 @@ function index() {
     </Formik>
   );
 }
-
-index.propTypes = {};
 
 export default index;

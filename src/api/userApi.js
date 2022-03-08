@@ -1,9 +1,10 @@
+import axiosBase from './axiosBase';
 import axiosClient from './axiosClient';
 
 const userApi = {
   login: (params) => {
     const url = '/token/';
-    return axiosClient.post(url, params);
+    return axiosBase.post(url, params);
   },
   getInfo: (params) => {
     const url = `/users/${params}/`;
