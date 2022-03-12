@@ -1,7 +1,7 @@
 import userApi from '../api/userApi';
 import jwt_decode from 'jwt-decode';
-import userSlice from '../redux/userSlice';
-const useLogin = async (data, dispatch, navigate) => {
+import userSlice from './userSlice';
+export const handleLogin = async (data, dispatch, navigate) => {
   dispatch(userSlice.actions.loginStart());
   try {
     const userAuthen = await userApi.login(data);
@@ -24,14 +24,15 @@ const useLogin = async (data, dispatch, navigate) => {
       dispatch(userSlice.actions.loginSuccess(user));
       navigate('/');
     } else {
+      dispatch(userSlice.actions.loginFailure('Đăng nhập thất bại'));
+    }
+  } catch (e) {
+    if (e.response && e.response.status === 401)
       dispatch(
         userSlice.actions.loginFailure(
           'Tài khoản hoặc mật khẩu không chính xác'
         )
       );
-    }
-  } catch (e) {
-    dispatch(userSlice.actions.loginFailure('Đăng nhập thất bại'));
+    else userSlice.actions.loginFailure('Đăng nhập thất bại');
   }
 };
-export default useLogin;
