@@ -26,7 +26,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { userSelector } from '../../redux/selectors';
+import { userSelector, cartSelector } from '../../redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import userSlice from '../../redux/userSlice';
 import noticeSlice from '../../redux/noticeSlice';
@@ -183,6 +183,7 @@ function HeaderRef(props) {
   } = props;
 
   const user = useSelector(userSelector);
+  const cart = useSelector(cartSelector);
   const userInfo = user.current;
   const dispatch = useDispatch();
   const handleLogout = () => {
@@ -270,7 +271,7 @@ function HeaderRef(props) {
                     )}
                 </Badge>
                 <Badge
-                  badgeContent={4}
+                  badgeContent={cart.current?.numberOfItems}
                   color='primary'
                   anchorOrigin={{
                     vertical: 'top',

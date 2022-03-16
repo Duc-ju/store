@@ -204,8 +204,8 @@ function Body(props) {
                     sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                   >
                     <img
-                      src={item.images[0].image}
-                      srcSet={item.images[0].image}
+                      src={`${process.env.REACT_APP_API_URL}${item.images[0].image}`}
+                      srcSet={`${process.env.REACT_APP_API_URL}${item.images[0].image}`}
                       alt={item.header}
                       loading='lazy'
                     />
@@ -226,8 +226,8 @@ function Body(props) {
                       sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                     >
                       <img
-                        src={image.id}
-                        srcSet={image.image}
+                        src={`${process.env.REACT_APP_API_URL}${image.image}`}
+                        srcSet={`${process.env.REACT_APP_API_URL}${image.image}`}
                         alt={item.header}
                         loading='lazy'
                       />

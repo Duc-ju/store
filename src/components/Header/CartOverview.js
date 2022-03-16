@@ -17,6 +17,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useSelector, useDispatch } from 'react-redux';
 import { cartSelector } from '../../redux/selectors';
 import cartSlice from './cartSlice';
+import normalizeNumber from '../../logic/normalizeNumber';
 const CartContainer = styled.div`
   width: 8rem;
   background-color: white;
@@ -103,17 +104,15 @@ const SelectBox = styled.select`
     font-size: 13px;
   }
 `;
-function CartItem() {
-  const [value, setValue] = React.useState(1);
-
+function CartItem({ item }) {
   return (
     <CartItemContainer>
       <Card>
         <Link to='/'>
           <CardMedia
             component='img'
-            image='https://cf.shopee.vn/file/d3de9ac75596a32971882992bfd036ef'
-            alt='green iguana'
+            image={`${process.env.REACT_APP_API_URL}${item.bookItem.image}`}
+            alt={item.bookItem.header}
           />
           <CardContent sx={{ p: 1 }}>
             <Typography
@@ -129,28 +128,18 @@ function CartItem() {
                 border: 'none',
               }}
             >
-              300.000đ
+              {`${normalizeNumber(
+                item.bookItem.price * (1 - item.bookItem.discount)
+              )}đ`}
             </Typography>
           </CardContent>
         </Link>
         <CardActions sx={{ pt: 0 }}>
           <ContainerRow>
             <ContainerFlex>
-              {/* <CustomSelect value={value} onChange={setValue}>
-                <StyledOption value={0}>{'0 (delete)'}</StyledOption>
-                <StyledOption value={1}>1</StyledOption>
-                <StyledOption value={2}>2</StyledOption>
-                <StyledOption value={3}>3</StyledOption>
-                <StyledOption value={3}>4</StyledOption>
-                <StyledOption value={3}>5</StyledOption>
-                <StyledOption value={3}>6</StyledOption>
-                <StyledOption value={3}>7</StyledOption>
-              </CustomSelect> */}
-              <SelectBox>
+              <SelectBox defaultValue={item.quantity}>
                 <option value='0'>0 (delete)</option>
-                <option value='1' selected>
-                  1
-                </option>
+                <option value='1'>1</option>
                 <option value='2'>2</option>
                 <option value='3'>3</option>
               </SelectBox>
@@ -182,37 +171,44 @@ function CartOverview() {
     window.addEventListener('click', handleClose);
     return () => window.removeEventListener('click', handleClose);
   }, []);
+
   return (
-    <CartContainer className='shadow-short cart' ref={cartElement}>
-      <CartContent>
-        <CartHeader>
-          <SubTotal>Tổng tiền</SubTotal>
-          <SubTotalNumber>{`${100000}đ`}</SubTotalNumber>
-          <Button
-            variant='contained'
-            color='primary'
-            size='small'
-            fullWidth
-            disableElevation
-            sx={{
-              my: '12px',
-              borderRadius: '0.75rem',
-              fontSize: '12px',
-              p: '2px',
-              textTransform: 'none',
-            }}
-          >
-            Thanh toán
-          </Button>
-          <Divider sx={{ width: '100%' }} />
-        </CartHeader>
-      </CartContent>
-      <CartBody>
-        <CartItem />
-        <CartItem />
-        <CartItem />
-      </CartBody>
-    </CartContainer>
+    <>
+      {cart.current !== null && (
+        <CartContainer className='shadow-short cart' ref={cartElement}>
+          <CartContent>
+            <CartHeader>
+              <SubTotal>Tổng tiền</SubTotal>
+              <SubTotalNumber>{`${normalizeNumber(
+                cart.current.subTotal
+              )}đ`}</SubTotalNumber>
+              <Button
+                variant='contained'
+                color='primary'
+                size='small'
+                fullWidth
+                disableElevation
+                sx={{
+                  my: '12px',
+                  borderRadius: '0.75rem',
+                  fontSize: '12px',
+                  p: '2px',
+                  textTransform: 'none',
+                }}
+              >
+                Thanh toán
+              </Button>
+              <Divider sx={{ width: '100%' }} />
+            </CartHeader>
+          </CartContent>
+          <CartBody>
+            {cart.current.bookItems.map((bookItem) => (
+              <CartItem key={bookItem.id} item={bookItem} />
+            ))}
+          </CartBody>
+        </CartContainer>
+      )}
+    </>
   );
 }
 
