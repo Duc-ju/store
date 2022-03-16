@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import HomeIcon from '@mui/icons-material/Home';
 import { MainContainer } from '../../components/Container';
@@ -28,6 +28,9 @@ import {
 } from '../../../../components/CustomSelect';
 import HeaderTitle from '../../components/HeaderTitle';
 import Product from '../../components/Product';
+import { useParams } from 'react-router-dom';
+import bookApi from '../../../../api/bookApi';
+import dictionary from './dictionary';
 const RoundedWhiteContainer = styled.div`
   border-radius: 0.75rem;
   background-color: white;
@@ -113,415 +116,401 @@ const DesciprionContainer = styled.p`
 const CoverLink = styled.div`
   margin-left: 4px;
 `;
+
 function Body(props) {
+  const { type, id } = useParams();
+  const [item, setItem] = useState(null);
+  useEffect(() => {
+    if (type === 'book') {
+      bookApi
+        .get(id)
+        .then((book) => {
+          setItem(dictionary.getBook(book));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
   return (
     <>
-      <RoundedWhiteContainer>
-        <Breadcrumbs
-          aria-label='breadcrumb'
-          separator='›'
-          sx={{ fontSize: '14px' }}
-        >
-          <CoverLink>
-            <Link to='/filter/book'>Sách</Link>
-          </CoverLink>
-          <Typography color='text.primary' sx={{ fontSize: '14px' }}>
-            Tôi thấy hoa vàng trên cỏ xanh
-          </Typography>
-        </Breadcrumbs>
-      </RoundedWhiteContainer>
-      <RoundedWhiteContainer>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <ImageList
-              sx={{ width: '100%', height: 'auto', m: 0 }}
-              cols={1}
-              rowHeight='auto'
+      {item && (
+        <>
+          <RoundedWhiteContainer>
+            <Breadcrumbs
+              aria-label='breadcrumb'
+              separator='›'
+              sx={{ fontSize: '14px' }}
             >
-              <ImageListItem
-                sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
-              >
-                <img
-                  src='https://cf.shopee.vn/file/8f7c06e8c90390c5f507ba0601be6fea'
-                  srcSet=''
-                  alt=''
-                  loading='lazy'
-                />
-              </ImageListItem>
-            </ImageList>
-            <ImageList
-              sx={{
-                width: '100%',
-                height: 'auto',
-                my: 0.5,
-              }}
-              cols={5}
-              rowHeight='auto'
-            >
-              <ImageListItem
-                sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
-              >
-                <img
-                  src='https://cf.shopee.vn/file/8f7c06e8c90390c5f507ba0601be6fea'
-                  srcSet=''
-                  alt=''
-                  loading='lazy'
-                />
-              </ImageListItem>
-              <ImageListItem
-                sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
-              >
-                <img
-                  src='https://cf.shopee.vn/file/8f7c06e8c90390c5f507ba0601be6fea'
-                  srcSet=''
-                  alt=''
-                  loading='lazy'
-                />
-              </ImageListItem>
-              <ImageListItem
-                sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
-              >
-                <img
-                  src='https://cf.shopee.vn/file/8f7c06e8c90390c5f507ba0601be6fea'
-                  srcSet=''
-                  alt=''
-                  loading='lazy'
-                />
-              </ImageListItem>
-            </ImageList>
-          </Grid>
-          <Grid item xs={6}>
-            <HeaderContainer>
-              <Header>
-                [ Ảnh Thật ] ÁO HOODIE UNISEX Nam Nữ BASIC CAO CẤP
-              </Header>
-              <RowFlexContainer>
-                <LinkItem link='/' content='4.6' />
-                <Rating
-                  name='rating'
-                  size='small'
-                  readOnly
-                  defaultValue={3}
-                  precision={1}
-                />
-                <Divider orientation='vertical' sx={{ mx: 1 }} flexItem />
-                <LinkItem link='/' content='16.3k' /> đánh giá
-                <Divider orientation='vertical' sx={{ mx: 2 }} flexItem />
-                <LinkItem link='/' content='36.3k' /> đã bán
-              </RowFlexContainer>
-              <RowFlexContainer style={{ marginTop: '8px' }}>
-                Thương hiệu:
-                <LinkItem
-                  link='/filter/brand'
-                  content='Lavano'
-                  style={{ marginLeft: '4px', fontWeight: 600 }}
-                />
-              </RowFlexContainer>
-              <MainContainer
-                style={{
-                  backgroundColor: 'var(--bg-base)',
-                  padding: '8px 16px',
-                }}
-              >
-                <RowFlexContainer>
-                  <div
-                    style={{ textDecoration: 'line-through', fontSize: '14px' }}
-                  >
-                    500.000đ
-                  </div>
-                  <div
-                    style={{
-                      color: 'var(--bg-primary)',
-                      fontSize: '24px',
-                      fontWeight: 600,
-                      marginLeft: '8px',
-                    }}
-                  >
-                    450.000
-                  </div>
-                  <Chip
-                    label='10% giảm'
-                    variant='filled'
-                    color='error'
-                    size='small'
-                    sx={{ ml: 1 }}
-                    className='bg-red-linear'
-                  />
-                </RowFlexContainer>
-              </MainContainer>
-              <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={2}>
-                  <CenterHeightContainer>Màu sắc</CenterHeightContainer>
-                </Grid>
-                <Grid item xs={10}>
-                  <Grid container spacing={1}>
-                    <Grid item>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        sx={{
-                          textTransform: 'none',
-                          border: '1px solid var(--text-primary)',
-                          color: 'var(--text-primary)',
-                          borderRadius: '0.75rem',
-                        }}
-                      >
-                        Đỏ
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        sx={{
-                          textTransform: 'none',
-                          border: '1px solid var(--text-primary)',
-                          color: 'var(--text-primary)',
-                          borderRadius: '0.75rem',
-                        }}
-                      >
-                        Xanh
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        sx={{
-                          textTransform: 'none',
-                          border: '1px solid var(--text-primary)',
-                          color: 'var(--text-primary)',
-                          borderRadius: '0.75rem',
-                        }}
-                      >
-                        Cam
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button
-                        variant='outlined'
-                        size='small'
-                        sx={{
-                          textTransform: 'none',
-                          border: '1px solid var(--text-primary)',
-                          color: 'var(--text-primary)',
-                          borderRadius: '0.75rem',
-                        }}
-                      >
-                        Vàng
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2} sx={{ marginTop: 1 }}>
-                <Grid item xs={2}>
-                  <CenterHeightContainer>Số lượng</CenterHeightContainer>
-                </Grid>
-                <Grid item xs={10}>
-                  <CustomSelect value={1} sx={{ fontSize: '14px' }}>
-                    <StyledOption value={1} sx={{ fontSize: '14px' }}>
-                      1
-                    </StyledOption>
-                    <StyledOption value={2} sx={{ fontSize: '14px' }}>
-                      2
-                    </StyledOption>
-                  </CustomSelect>
-                </Grid>
-              </Grid>
-              <ButtonGroupContainer>
-                <Button
-                  variant='contained'
-                  size='large'
-                  sx={{ textTransform: 'none', borderRadius: '0.75rem' }}
-                  startIcon={<AddShoppingCartIcon />}
+              <CoverLink>
+                <Link to={item.breadcrumb.link}>{item.breadcrumb.display}</Link>
+              </CoverLink>
+              <Typography color='text.primary' sx={{ fontSize: '14px' }}>
+                {item.header}
+              </Typography>
+            </Breadcrumbs>
+          </RoundedWhiteContainer>
+          <RoundedWhiteContainer>
+            <Grid container spacing={2}>
+              <Grid item xs={3}>
+                <ImageList
+                  sx={{ width: '100%', height: 'auto', m: 0 }}
+                  cols={1}
+                  rowHeight='auto'
                 >
-                  Thêm vào giỏ hàng
-                </Button>
-                <Button
-                  variant='outlined'
-                  size='large'
-                  sx={{ textTransform: 'none', borderRadius: '0.75rem' }}
+                  <ImageListItem
+                    sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
+                  >
+                    <img
+                      src={item.images[0].image}
+                      srcSet={item.images[0].image}
+                      alt={item.header}
+                      loading='lazy'
+                    />
+                  </ImageListItem>
+                </ImageList>
+                <ImageList
+                  sx={{
+                    width: '100%',
+                    height: 'auto',
+                    my: 0.5,
+                  }}
+                  cols={5}
+                  rowHeight='auto'
                 >
-                  Mua ngay
-                </Button>
-              </ButtonGroupContainer>
-            </HeaderContainer>
-          </Grid>
-          <Grid item xs={3}>
-            <FlexBoxColumn>
-              <Shortcut
-                Icon={CompareArrowsIcon}
-                title='Sản phẩm tương tự'
-                className='bg-blue-linear'
-                link='/filter/likely'
-              />
-              <Shortcut
-                Icon={AddCircleIcon}
-                title='Sản phẩm thường được mua kèm'
-                className='bg-red-linear'
-                link='/filter/likely'
-              />
-            </FlexBoxColumn>
-          </Grid>
-        </Grid>
-      </RoundedWhiteContainer>
-
-      <Grid container spacing={4}>
-        <Grid item xs={9.5}>
-          <RoundedWhiteContainer style={{ padding: '16px' }}>
-            <ContentHeader>Chi tiết sản phẩm</ContentHeader>
-            <DetailContainer>
-              <Grid container spacing={2}>
-                <Grid item xs={2}>
-                  <RowFlexContainer>Danh mục</RowFlexContainer>
-                </Grid>
-                <Grid item xs={10}>
-                  <RowFlexContainer>
-                    <Breadcrumbs
-                      aria-label='breadcrumb'
-                      separator='›'
-                      sx={{ fontSize: '14px' }}
+                  {item.images.map((image) => (
+                    <ImageListItem
+                      key={image.image}
+                      sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                     >
-                      <CoverLink>
-                        <Link to='/filter/book'>Sách</Link>
-                      </CoverLink>
-                      <Typography
-                        color='text.primary'
-                        sx={{ fontSize: '14px' }}
-                      >
-                        Tôi thấy hoa vàng trên cỏ xanh
-                      </Typography>
-                    </Breadcrumbs>
-                  </RowFlexContainer>
-                </Grid>
+                      <img
+                        src={image.id}
+                        srcSet={image.image}
+                        alt={item.header}
+                        loading='lazy'
+                      />
+                    </ImageListItem>
+                  ))}
+                </ImageList>
               </Grid>
-              <Grid container spacing={2}>
-                <Grid item xs={2}>
-                  <RowFlexContainer>Thương hiệu</RowFlexContainer>
-                </Grid>
-                <Grid item xs={10}>
+              <Grid item xs={6}>
+                <HeaderContainer>
+                  <Header>{item.header}</Header>
                   <RowFlexContainer>
+                    <LinkItem link='/' content='4.6' />
+                    <Rating
+                      name='rating'
+                      size='small'
+                      readOnly
+                      defaultValue={3}
+                      precision={1}
+                    />
+                    <Divider orientation='vertical' sx={{ mx: 1 }} flexItem />
+                    <LinkItem link='/' content='16.3k' /> đánh giá
+                    <Divider orientation='vertical' sx={{ mx: 2 }} flexItem />
+                    <LinkItem link='/' content='36.3k' /> đã bán
+                  </RowFlexContainer>
+                  <RowFlexContainer style={{ marginTop: '8px' }}>
+                    {item.brand.title}
                     <LinkItem
-                      style={{ margin: 0 }}
-                      link='/filter/brand'
-                      content='Lavano'
+                      link={item.brand.link}
+                      content={item.brand.value}
                       style={{ marginLeft: '4px', fontWeight: 600 }}
                     />
                   </RowFlexContainer>
-                </Grid>
-              </Grid>
-              <Grid container spacing={2}>
-                <Grid item xs={2}>
-                  <RowFlexContainer>Chất liệu</RowFlexContainer>
-                </Grid>
-                <Grid item xs={10}>
-                  <RowFlexContainer
-                    style={{ marginLeft: '4px', fontSize: '15px' }}
+                  <MainContainer
+                    style={{
+                      backgroundColor: 'var(--bg-base)',
+                      padding: '8px 16px',
+                    }}
                   >
-                    Vải
-                  </RowFlexContainer>
+                    <RowFlexContainer>
+                      <div
+                        style={{
+                          textDecoration: 'line-through',
+                          fontSize: '14px',
+                        }}
+                      >
+                        {`${item.originPrice}đ`}
+                      </div>
+                      <div
+                        style={{
+                          color: 'var(--bg-primary)',
+                          fontSize: '24px',
+                          fontWeight: 600,
+                          marginLeft: '8px',
+                        }}
+                      >
+                        {`${item.price}đ`}
+                      </div>
+                      <Chip
+                        label={`${item.discount}% giảm`}
+                        variant='filled'
+                        color='error'
+                        size='small'
+                        sx={{ ml: 1 }}
+                        className='bg-red-linear'
+                      />
+                    </RowFlexContainer>
+                  </MainContainer>
+                  <Grid container spacing={2} sx={{ mt: 1 }}>
+                    <Grid item xs={2}>
+                      <CenterHeightContainer>Màu sắc</CenterHeightContainer>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Grid container spacing={1}>
+                        <Grid item>
+                          <Button
+                            variant='outlined'
+                            size='small'
+                            sx={{
+                              textTransform: 'none',
+                              border: '1px solid var(--text-primary)',
+                              color: 'var(--text-primary)',
+                              borderRadius: '0.75rem',
+                            }}
+                          >
+                            Đỏ
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            variant='outlined'
+                            size='small'
+                            sx={{
+                              textTransform: 'none',
+                              border: '1px solid var(--text-primary)',
+                              color: 'var(--text-primary)',
+                              borderRadius: '0.75rem',
+                            }}
+                          >
+                            Xanh
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            variant='outlined'
+                            size='small'
+                            sx={{
+                              textTransform: 'none',
+                              border: '1px solid var(--text-primary)',
+                              color: 'var(--text-primary)',
+                              borderRadius: '0.75rem',
+                            }}
+                          >
+                            Cam
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button
+                            variant='outlined'
+                            size='small'
+                            sx={{
+                              textTransform: 'none',
+                              border: '1px solid var(--text-primary)',
+                              color: 'var(--text-primary)',
+                              borderRadius: '0.75rem',
+                            }}
+                          >
+                            Vàng
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ marginTop: 1 }}>
+                    <Grid item xs={2}>
+                      <CenterHeightContainer>Số lượng</CenterHeightContainer>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <CustomSelect value={1} sx={{ fontSize: '14px' }}>
+                        <StyledOption value={1} sx={{ fontSize: '14px' }}>
+                          1
+                        </StyledOption>
+                        <StyledOption value={2} sx={{ fontSize: '14px' }}>
+                          2
+                        </StyledOption>
+                      </CustomSelect>
+                    </Grid>
+                  </Grid>
+                  <ButtonGroupContainer>
+                    <Button
+                      variant='contained'
+                      size='large'
+                      sx={{ textTransform: 'none', borderRadius: '0.75rem' }}
+                      startIcon={<AddShoppingCartIcon />}
+                    >
+                      Thêm vào giỏ hàng
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      size='large'
+                      sx={{ textTransform: 'none', borderRadius: '0.75rem' }}
+                    >
+                      Mua ngay
+                    </Button>
+                  </ButtonGroupContainer>
+                </HeaderContainer>
+              </Grid>
+              <Grid item xs={3}>
+                <FlexBoxColumn>
+                  <Shortcut
+                    Icon={CompareArrowsIcon}
+                    title='Sản phẩm tương tự'
+                    className='bg-blue-linear'
+                    link='/filter/likely'
+                  />
+                  <Shortcut
+                    Icon={AddCircleIcon}
+                    title='Sản phẩm thường được mua kèm'
+                    className='bg-red-linear'
+                    link='/filter/likely'
+                  />
+                </FlexBoxColumn>
+              </Grid>
+            </Grid>
+          </RoundedWhiteContainer>
+
+          <Grid container spacing={4}>
+            <Grid item xs={9.5}>
+              <RoundedWhiteContainer style={{ padding: '16px' }}>
+                <ContentHeader>Chi tiết sản phẩm</ContentHeader>
+                <DetailContainer>
+                  <Grid container spacing={2}>
+                    <Grid item xs={2}>
+                      <RowFlexContainer>Danh mục</RowFlexContainer>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <RowFlexContainer>
+                        <Breadcrumbs
+                          aria-label='breadcrumb'
+                          separator='›'
+                          sx={{ fontSize: '14px' }}
+                        >
+                          <CoverLink>
+                            <Link to={item.breadcrumb.link}>
+                              {item.breadcrumb.display}
+                            </Link>
+                          </CoverLink>
+                          <Typography
+                            color='text.primary'
+                            sx={{ fontSize: '14px' }}
+                          >
+                            {item.header}
+                          </Typography>
+                        </Breadcrumbs>
+                      </RowFlexContainer>
+                    </Grid>
+                  </Grid>
+                  {item.listDetail.map((detail) => (
+                    <Grid container spacing={2}>
+                      <Grid item xs={2}>
+                        <RowFlexContainer>{detail.title}</RowFlexContainer>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <RowFlexContainer>
+                          {detail.link ? (
+                            <LinkItem
+                              link={detail.link}
+                              content={detail.value}
+                              style={{
+                                margin: 0,
+                                marginLeft: '4px',
+                                fontWeight: 600,
+                              }}
+                            />
+                          ) : (
+                            detail.value
+                          )}
+                        </RowFlexContainer>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </DetailContainer>
+                <ContentHeader>Mô tả sản phẩm</ContentHeader>
+                <DesciprionContainer>{item.description}</DesciprionContainer>
+              </RoundedWhiteContainer>
+              <HeaderTitle
+                Icon={CompareArrowsIcon}
+                color='primary'
+                title='Sản phẩm tương tự'
+                style={{ marginTop: '16px' }}
+              />
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Shortcut
+                    Icon={CompareArrowsIcon}
+                    title='Xem tất cả'
+                    className='bg-blue-linear'
+                    link='/filter/likely'
+                  />
                 </Grid>
               </Grid>
-            </DetailContainer>
-            <ContentHeader>Mô tả sản phẩm</ContentHeader>
-            <DesciprionContainer>
-              💙💙💙 COTTON GIẤY BA LỖ 💙💙💙 💙 siêu phẩm hot nhất mùa hè 2022
-              Giấy nhà em bán có thương hiệu rồi nhaaa MỀM MỎNG MÁT ☘️ Bảng màu
-              siêu yêu ạ Hình nào cũng xinh Ảnh thật tay em chụp ❌NÓI KHÔNG VỚI
-              GIẤY PE RẺ TIỀN Ạ Năm nay thời tiết mùa hè đến sớm, các mẹ nhanh
-              tay sắm cho bé yêu của mình Bộ cotton giấy cộc tay bé trai/ gái,
-              vải QC cao cấp sờ mềm mịn mát lịm tay. -Có đủ size cho bé từ
-              3-15kg: ( Inbox cho shop để được tư vấn nhiệt tình về size và cập
-              nhật nhiều mẫu hơn) -Chất liệu cotton 100% mặc mát, mềm mại, thấm
-              hút mồ hôi - Màu sắc và họa tiết con vật khác nhau, rất ngộ nghĩnh
-              và đáng yêu nè -Hàng xuất xứ Việt Nam, chất lượng cao - Cam kết
-              giao đúng mẫu mã và số lượng 👉👉👉 Các mẹ chỉ cần chọn cân nặng
-              và giới tính, shop sẽ giao ngẫu nhiên mẫu phù hợp và cam kết đẹp
-              cho bé ⛔️⛔️⛔️ Bé nào trộm vía bụ bẫm mẹ chọn tăng lên 1 size
-              cho bé nhé #bộbégái #bộbétrai #bộchobé #bộcotton #bộcottonchobé
-              #bộcottongiấy #bộcộctaychobé #bộcộctay #thoitrangtreem
-              #troitrangchobe #kid #kids #kidsfashion #mevabe #baby
-            </DesciprionContainer>
-          </RoundedWhiteContainer>
-          <HeaderTitle
-            Icon={CompareArrowsIcon}
-            color='primary'
-            title='Sản phẩm tương tự'
-            style={{ marginTop: '16px' }}
-          />
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Shortcut
-                Icon={CompareArrowsIcon}
-                title='Xem tất cả'
-                className='bg-blue-linear'
-                link='/filter/likely'
-              />
-            </Grid>
-          </Grid>
-          <HeaderTitle
-            Icon={AddCircleIcon}
-            title='Sản phẩm thường được mua kèm'
-            style={{ marginTop: '16px' }}
-          />
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={2.4}>
-              <Shortcut
+              <HeaderTitle
                 Icon={AddCircleIcon}
-                title='Xem tất cả'
-                className='bg-red-linear'
-                link='/filter/likely'
+                title='Sản phẩm thường được mua kèm'
+                style={{ marginTop: '16px' }}
               />
+              <Grid container spacing={2} sx={{ mt: 1 }}>
+                <Grid item xs={2.4}>
+                  <Shortcut
+                    Icon={AddCircleIcon}
+                    title='Xem tất cả'
+                    className='bg-red-linear'
+                    link='/filter/likely'
+                  />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+                <Grid item xs={2.4}>
+                  <Product showControl={false} />
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
-            </Grid>
-            <Grid item xs={2.4}>
-              <Product showControl={false} />
+            <Grid item xs={2.5}>
+              <BaseContainer>
+                <HeaderTitle
+                  style={{ padding: '8px' }}
+                  title='Sản phẩm hot'
+                  Icon={LocalFireDepartmentIcon}
+                  color='error'
+                />
+              </BaseContainer>
+              <Grid container spacing={2} sx={{ mt: 0.5 }}>
+                <Grid item xs={12}>
+                  <Product />
+                </Grid>
+                <Grid item xs={12}>
+                  <Product />
+                </Grid>
+                <Grid item xs={12}>
+                  <Product />
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={2.5}>
-          <BaseContainer>
-            <HeaderTitle
-              style={{ padding: '8px' }}
-              title='Sản phẩm hot'
-              Icon={LocalFireDepartmentIcon}
-              color='error'
-            />
-          </BaseContainer>
-          <Grid container spacing={2} sx={{ mt: 0.5 }}>
-            <Grid item xs={12}>
-              <Product />
-            </Grid>
-            <Grid item xs={12}>
-              <Product />
-            </Grid>
-            <Grid item xs={12}>
-              <Product />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
+        </>
+      )}
     </>
   );
 }

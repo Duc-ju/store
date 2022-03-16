@@ -1,5 +1,6 @@
 {
   "name": "store-online",
+  "homepage": "https://store-16c8d.web.app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

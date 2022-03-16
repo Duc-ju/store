@@ -1,11 +1,11 @@
 import axios from 'axios';
 import queryString from 'query-string';
-const axiosClient = axios.create({
+const axiosBase = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL}/api`,
   paramsSerializer: (params) => queryString.stringify(params),
 });
 
-axiosClient.interceptors.response.use(
+axiosBase.interceptors.response.use(
   (response) => {
     if (response && response.data) {
       return response.data;
@@ -13,8 +13,7 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (err) => {
-    //handle error
     throw err;
   }
 );
-export default axiosClient;
+export default axiosBase;

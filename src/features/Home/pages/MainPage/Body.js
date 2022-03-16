@@ -200,7 +200,7 @@ function Body() {
         <Grid container spacing={2} sx={{ marginTop: -4 }}>
           <Grid item xs={3}>
             <Shortcut
-              link='/filter/all-product'
+              link='/product/all'
               Icon={CategoryIcon}
               title='Xem tất cả sản phẩm'
               className='bg-blue-linear'

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import queryString from 'query-string';
 import jwt_decode from 'jwt-decode';
+import axiosBase from './axiosBase';
 const axiosClient = axios.create({
   baseURL: `${process.env.REACT_APP_API_URL}/api`,
   paramsSerializer: (params) => queryString.stringify(params),
@@ -14,14 +15,13 @@ axiosClient.interceptors.request.use(async (config) => {
     const accessInfo = jwt_decode(user.access);
     const date = new Date();
     if (date.getTime() / 1000 > accessInfo.exp) {
-      const refreshToken = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/token/refresh/`,
-        { refresh: user.refresh }
-      );
-      user.access = refreshToken.data.access;
-      console.log('refresh token');
-      console.log(user);
-      window.localStorage.setItem('user', JSON.stringify(user));
+      const refreshToken = await axiosBase.post('/token/refresh/', {
+        refresh: user.refresh,
+      });
+      if (refreshToken.access) {
+        user.access = refreshToken.access;
+        window.localStorage.setItem('user', JSON.stringify(user));
+      }
     }
     config.headers.Authorization = `Bearer ${user.access}`;
   }

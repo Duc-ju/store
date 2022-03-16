@@ -7,6 +7,7 @@ import Login from './features/Login';
 import Home from './features/Home';
 import Register from './features/Register';
 import ScrollToTop from './router/ScrollToTop';
+import SnackNotice from './components/SnackNotice';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               <Route path='/register' element={<Register />} />
               <Route path='*' element={<NotFound />} />
             </Routes>
+            <SnackNotice />
           </ScrollToTop>
         </BrowserRouter>
       </Suspense>

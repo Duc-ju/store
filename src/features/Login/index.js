@@ -1,7 +1,7 @@
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoginIcon from '@mui/icons-material/Login';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Alert, AlertTitle, CardContent } from '@mui/material';
+import { Button, Card, CardContent } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -19,11 +19,11 @@ import CheckBoxField from '../../components/CheckBoxField';
 import InputField from '../../components/InputField';
 import { handleLogin } from '../../redux/apiRequests';
 import { userSelector } from '../../redux/selectors';
-import { Card } from '@mui/material';
 const theme = createTheme();
 
 function Login() {
   const user = useSelector(userSelector);
+  console.log(user);
   const initialValues = {
     username: '',
     password: '',
@@ -67,16 +67,6 @@ function Login() {
                     <Typography component='h1' variant='h5'>
                       Đăng nhập
                     </Typography>
-                    {user.error && (
-                      <Alert
-                        severity='error'
-                        sx={{
-                          width: '100%',
-                        }}
-                      >
-                        <AlertTitle>{user.error}</AlertTitle>
-                      </Alert>
-                    )}
                     <Form>
                       <FastField
                         name='username'
@@ -113,13 +103,17 @@ function Login() {
 
                       <Grid container>
                         <Grid item xs>
-                          <Link href='#' variant='body2'>
-                            Quên mật khẩu?
+                          <Link to='/forgot'>
+                            <Button sx={{ textTransform: 'none' }}>
+                              Quên mật khẩu?
+                            </Button>
                           </Link>
                         </Grid>
                         <Grid item>
-                          <Link href='#' variant='body2'>
-                            {'Chưa có tài khoản? Đăng kí ngay'}
+                          <Link to='/register'>
+                            <Button sx={{ textTransform: 'none' }}>
+                              {'Chưa có tài khoản? Đăng kí ngay'}
+                            </Button>
                           </Link>
                         </Grid>
                       </Grid>

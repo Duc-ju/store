@@ -1,15 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Checkbox, FormControlLabel } from '@mui/material';
+import { Checkbox, FormControlLabel, FormHelperText } from '@mui/material';
 
 function CheckBoxField(props) {
-  const { field, label, color } = props;
+  const { field, label, color, form } = props;
+  const { name } = field;
+  const { errors, touched } = form;
+  const showError = errors[name] && touched[name];
   return (
     <div>
       <FormControlLabel
         control={<Checkbox value='remember' color={color} {...field} />}
         label={label}
       />
+      <FormHelperText error={showError}>{errors[name]}</FormHelperText>
     </div>
   );
 }
