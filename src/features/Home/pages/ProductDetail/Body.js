@@ -31,6 +31,12 @@ import Product from '../../components/Product';
 import { useParams } from 'react-router-dom';
 import bookApi from '../../../../api/bookApi';
 import dictionary from './dictionary';
+import { LoadingButton } from '@mui/lab';
+import cartApi from '../../../../api/cartApi';
+import { useSelector, useDispatch } from 'react-redux';
+import { userSelector, dispatch } from '../../../../redux/selectors';
+import noticeSlice from '../../../../redux/noticeSlice';
+import cartSlice from '../../../../components/Header/cartSlice';
 const RoundedWhiteContainer = styled.div`
   border-radius: 0.75rem;
   background-color: white;
@@ -120,6 +126,8 @@ const CoverLink = styled.div`
 function Body(props) {
   const { type, id } = useParams();
   const [item, setItem] = useState(null);
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   useEffect(() => {
     if (type === 'book') {
       bookApi
@@ -132,6 +140,39 @@ function Body(props) {
         });
     }
   }, []);
+  const dispatch = useDispatch();
+  const user = useSelector(userSelector);
+  const handleAddToCart = () => {
+    setAddingToCart(true);
+    cartApi
+      .addItemToCart({
+        cartId: user.current.cart,
+        bookItem: item.id,
+        quantity: quantity,
+      })
+      .then((cart) => {
+        setAddingToCart(false);
+        console.log(cart);
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Thêm sản phẩm vào giỏ hàng thành công',
+            type: 'success',
+          })
+        );
+        dispatch(cartSlice.actions.setSuccess(cart));
+        dispatch(cartSlice.actions.show());
+      })
+      .catch((e) => {
+        setAddingToCart(false);
+        console.log(e);
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Đã có lỗi xảy ra',
+            type: 'error',
+          })
+        );
+      });
+  };
 
   return (
     <>
@@ -181,7 +222,7 @@ function Body(props) {
                 >
                   {item.images.map((image) => (
                     <ImageListItem
-                      key={image.image}
+                      key={image.id}
                       sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                     >
                       <img
@@ -324,25 +365,41 @@ function Body(props) {
                       <CenterHeightContainer>Số lượng</CenterHeightContainer>
                     </Grid>
                     <Grid item xs={10}>
-                      <CustomSelect value={1} sx={{ fontSize: '14px' }}>
+                      <CustomSelect
+                        value={quantity}
+                        sx={{ fontSize: '14px' }}
+                        onChange={(e) => setQuantity(e)}
+                      >
                         <StyledOption value={1} sx={{ fontSize: '14px' }}>
                           1
                         </StyledOption>
                         <StyledOption value={2} sx={{ fontSize: '14px' }}>
                           2
                         </StyledOption>
+                        <StyledOption value={3} sx={{ fontSize: '14px' }}>
+                          3
+                        </StyledOption>
+                        <StyledOption value={4} sx={{ fontSize: '14px' }}>
+                          4
+                        </StyledOption>
+                        <StyledOption value={5} sx={{ fontSize: '14px' }}>
+                          5
+                        </StyledOption>
                       </CustomSelect>
                     </Grid>
                   </Grid>
                   <ButtonGroupContainer>
-                    <Button
+                    <LoadingButton
                       variant='contained'
                       size='large'
                       sx={{ textTransform: 'none', borderRadius: '0.75rem' }}
                       startIcon={<AddShoppingCartIcon />}
+                      loading={addingToCart}
+                      loadingPosition='start'
+                      onClick={handleAddToCart}
                     >
                       Thêm vào giỏ hàng
-                    </Button>
+                    </LoadingButton>
                     <Button
                       variant='outlined'
                       size='large'
@@ -404,7 +461,7 @@ function Body(props) {
                     </Grid>
                   </Grid>
                   {item.listDetail.map((detail) => (
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} key={detail.title}>
                       <Grid item xs={2}>
                         <RowFlexContainer>{detail.title}</RowFlexContainer>
                       </Grid>

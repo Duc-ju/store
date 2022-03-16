@@ -2,6 +2,7 @@ const dictionary = {
   getBook: (item) => {
     let book = item.book;
     return {
+      id: item.id,
       header: item.header,
       originPrice: Math.round(item.price).toLocaleString(undefined, {
         minimumFractionDigits: 0,

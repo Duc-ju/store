@@ -1,8 +1,10 @@
 import HeaderRef from './HeaderRef';
 import { useState, useEffect, useRef } from 'react';
 import CartOverview from './CartOverview';
+import { useSelector } from 'react-redux';
+import { cartSelector } from '../../redux/selectors';
+
 function Header() {
-  const [openCartOverView, setOpenCartOverView] = useState(false);
   const [duplicate, setDuplicate] = useState(false);
   const [position, setPosition] = useState({
     right: 24,
@@ -11,7 +13,7 @@ function Header() {
   });
   const [openNotifications, setOpenNotifications] = useState(false);
   const headerElement = useRef();
-
+  const cart = useSelector(cartSelector);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0) setDuplicate(true);
@@ -47,7 +49,6 @@ function Header() {
         isBase
         duplicated={duplicate}
         headerElement={headerElement}
-        setOpenCartOverView={setOpenCartOverView}
         openNotifications={openNotifications}
         setOpenNotifications={setOpenNotifications}
       />
@@ -56,15 +57,12 @@ function Header() {
           <HeaderRef
             duplicate={duplicate}
             position={position}
-            setOpenCartOverView={setOpenCartOverView}
             openNotifications={openNotifications}
             setOpenNotifications={setOpenNotifications}
           />
         </>
       )}
-      {openCartOverView && (
-        <CartOverview setOpenCartOverView={setOpenCartOverView} />
-      )}
+      {cart.isShown && <CartOverview />}
     </>
   );
 }

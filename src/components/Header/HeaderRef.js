@@ -30,6 +30,7 @@ import { userSelector } from '../../redux/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import userSlice from '../../redux/userSlice';
 import noticeSlice from '../../redux/noticeSlice';
+import cartSlice from './cartSlice';
 const MainContainer = styled.div`
   color: var(--text-primary);
   border-radius: 0.75rem;
@@ -177,15 +178,10 @@ function HeaderRef(props) {
     isBase,
     headerElement,
     position,
-    setOpenCartOverView,
     openNotifications,
     setOpenNotifications,
   } = props;
-  const [openSnackBar, setOpenSnackBar] = useState({
-    display: false,
-    content: '',
-    severity: 'info',
-  });
+
   const user = useSelector(userSelector);
   const userInfo = user.current;
   const dispatch = useDispatch();
@@ -197,6 +193,9 @@ function HeaderRef(props) {
         type: 'success',
       })
     );
+  };
+  const handleOpenCart = () => {
+    dispatch(cartSlice.actions.show());
   };
   return (
     <MainContainer
@@ -238,6 +237,14 @@ function HeaderRef(props) {
           <IconContainer>
             {userInfo ? (
               <>
+                <IconButton aria-label='Avatar'>
+                  <Avatar
+                    sx={{ bgcolor: 'success' }}
+                    alt={userInfo.displayName}
+                    src={process.env.REACT_APP_API_URL + userInfo.photoUrl}
+                    style={{ border: '2px solid var(--bg-primary)' }}
+                  />
+                </IconButton>
                 <Badge
                   badgeContent={4}
                   color='primary'
@@ -273,19 +280,12 @@ function HeaderRef(props) {
                   <Button
                     startIcon={<ShoppingCartIcon />}
                     sx={{ p: 0.3, textTransform: 'none' }}
-                    onMouseOver={() => setOpenCartOverView(true)}
+                    onClick={handleOpenCart}
                   >
                     Giỏ hàng
                   </Button>
                 </Badge>
-                <IconButton aria-label='Avatar'>
-                  <Avatar
-                    sx={{ bgcolor: 'success' }}
-                    alt={userInfo.displayName}
-                    src={process.env.REACT_APP_API_URL + userInfo.photoUrl}
-                    style={{ border: '2px solid var(--bg-primary)' }}
-                  />
-                </IconButton>
+
                 <Button
                   sx={{ textTransform: 'none' }}
                   style={{ marginLeft: '0!important' }}

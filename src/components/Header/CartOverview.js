@@ -14,6 +14,9 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { useSelector, useDispatch } from 'react-redux';
+import { cartSelector } from '../../redux/selectors';
+import cartSlice from './cartSlice';
 const CartContainer = styled.div`
   width: 8rem;
   background-color: white;
@@ -163,15 +166,16 @@ function CartItem() {
     </CartItemContainer>
   );
 }
-function CartOverview(props) {
-  const { setOpenCartOverView } = props;
+function CartOverview() {
+  const cart = useSelector(cartSelector);
+  const dispatch = useDispatch();
   const cartElement = useRef();
   useEffect(() => {
     const handleClose = (e) => {
       if (!cartElement.current.contains(e.target)) {
         cartElement.current.classList.add('slide-out');
         setTimeout(() => {
-          setOpenCartOverView(false);
+          dispatch(cartSlice.actions.close());
         }, 490);
       }
     };
@@ -183,7 +187,7 @@ function CartOverview(props) {
       <CartContent>
         <CartHeader>
           <SubTotal>Tổng tiền</SubTotal>
-          <SubTotalNumber>127.000đ</SubTotalNumber>
+          <SubTotalNumber>{`${100000}đ`}</SubTotalNumber>
           <Button
             variant='contained'
             color='primary'
