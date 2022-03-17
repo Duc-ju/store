@@ -10,14 +10,16 @@ import {
   Typography,
 } from '@mui/material';
 import './index.css';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useSelector, useDispatch } from 'react-redux';
 import { cartSelector } from '../../redux/selectors';
 import cartSlice from './cartSlice';
+import noticeSlice from '../../redux/noticeSlice';
 import normalizeNumber from '../../logic/normalizeNumber';
+import cartApi from '../../api/cartApi';
 const CartContainer = styled.div`
   width: 8rem;
   background-color: white;
@@ -84,11 +86,15 @@ const SubTotalNumber = styled.div`
   color: var(--bg-primary);
 `;
 const ContainerFlex = styled.div`
+  flex-direction: column;
   height: 100%;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
 `;
 const ContainerRow = styled(ContainerFlex)`
+  flex-direction: row;
+  display: flex;
   justify-content: space-between;
   width: 100%;
 `;
@@ -104,6 +110,174 @@ const SelectBox = styled.select`
     font-size: 13px;
   }
 `;
+const Input = styled.input`
+  display: block;
+  font-size: 13px;
+  border: none;
+  outline: 1px solid var(--text-primary);
+  border-radius: 0.75rem;
+  display: inline-block;
+  width: 36px;
+  padding: 2px 6px;
+  :focus {
+    outline: 1px solid var(--bg-primary);
+  }
+`;
+function ItemControl({ item }) {
+  const [openInput, setOpenInput] = useState(item.quantity > 10);
+  const [inputQuantity, setInputQuantity] = useState(item.quantity);
+  const [isFocusInput, setIsFocusInput] = useState(false);
+  const cart = useSelector(cartSelector);
+  const dispatch = useDispatch();
+  const deleteItem = () => {
+    cartApi
+      .deleteItem({
+        cartId: cart.current.id,
+        data: { cartBookItem: item.id },
+      })
+      .then((cart) => {
+        dispatch(cartSlice.actions.setSuccess(cart));
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Xoá sản phẩm thành công',
+            type: 'success',
+          })
+        );
+      })
+      .catch(() => {
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Xoá sản phẩm không thành công',
+            type: 'error',
+          })
+        );
+      });
+  };
+  const handleChangeQuantity = (e) => {
+    let newQuantity = e.target.value;
+    if (newQuantity === '0') {
+      deleteItem();
+    } else if (newQuantity === '>10') {
+      setOpenInput(true);
+    } else {
+      cartApi
+        .updateItem({
+          cartId: cart.current.id,
+          quantity: newQuantity,
+          cartBookItem: item.id,
+        })
+        .then((cart) => {
+          dispatch(cartSlice.actions.setSuccess(cart));
+          dispatch(
+            noticeSlice.actions.show({
+              title: 'Đã cập nhật',
+              type: 'success',
+            })
+          );
+        })
+        .catch(() => {
+          dispatch(
+            noticeSlice.actions.show({
+              title: 'Có lỗi xảy ra',
+              type: 'error',
+            })
+          );
+        });
+    }
+  };
+  const handleInputChange = () => {
+    cartApi
+      .updateItem({
+        cartId: cart.current.id,
+        quantity: inputQuantity,
+        cartBookItem: item.id,
+      })
+      .then((cart) => {
+        dispatch(cartSlice.actions.setSuccess(cart));
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Đã cập nhật',
+            type: 'success',
+          })
+        );
+        if (inputQuantity <= 10) setOpenInput(false);
+      })
+      .catch(() => {
+        dispatch(
+          noticeSlice.actions.show({
+            title: 'Có lỗi xảy ra',
+            type: 'error',
+          })
+        );
+      });
+  };
+  return (
+    <>
+      <ContainerRow>
+        <ContainerFlex>
+          {openInput ? (
+            <>
+              <Input
+                type='number'
+                value={inputQuantity}
+                onChange={(e) => setInputQuantity(e.target.value)}
+                onFocus={() => setIsFocusInput(true)}
+                onBlur={() =>
+                  setTimeout(() => {
+                    setIsFocusInput(false);
+                  }, 300)
+                }
+              />
+              {isFocusInput && (
+                <Button
+                  sx={{
+                    textTransform: 'none',
+                    lineHeight: '1.2',
+                    fontSize: '0.7rem',
+                    borderRadius: '0.75rem',
+                    minWidth: '30px',
+                    marginTop: '4px',
+                  }}
+                  color='error'
+                  onClick={handleInputChange}
+                >
+                  Lưu
+                </Button>
+              )}
+            </>
+          ) : (
+            <SelectBox
+              defaultValue={item.quantity}
+              onChange={handleChangeQuantity}
+            >
+              <option value='0'>0 (Xoá)</option>
+              <option value='1'>1</option>
+              <option value='2'>2</option>
+              <option value='3'>3</option>
+              <option value='4'>4</option>
+              <option value='5'>5</option>
+              <option value='6'>6</option>
+              <option value='7'>7</option>
+              <option value='8'>8</option>
+              <option value='9'>9</option>
+              <option value='10'>10</option>
+              <option value='>10'>{'>10'}</option>
+            </SelectBox>
+          )}
+        </ContainerFlex>
+        <ContainerFlex>
+          <IconButton
+            aria-label='delete'
+            size='small'
+            onClick={() => deleteItem()}
+          >
+            <DeleteOutlineIcon />
+          </IconButton>
+        </ContainerFlex>
+      </ContainerRow>
+    </>
+  );
+}
 function CartItem({ item }) {
   return (
     <CartItemContainer>
@@ -135,21 +309,7 @@ function CartItem({ item }) {
           </CardContent>
         </Link>
         <CardActions sx={{ pt: 0 }}>
-          <ContainerRow>
-            <ContainerFlex>
-              <SelectBox defaultValue={item.quantity}>
-                <option value='0'>0 (delete)</option>
-                <option value='1'>1</option>
-                <option value='2'>2</option>
-                <option value='3'>3</option>
-              </SelectBox>
-            </ContainerFlex>
-            <ContainerFlex>
-              <IconButton aria-label='love' size='small'>
-                <DeleteOutlineIcon />
-              </IconButton>
-            </ContainerFlex>
-          </ContainerRow>
+          <ItemControl item={item} />
         </CardActions>
       </Card>
     </CartItemContainer>
