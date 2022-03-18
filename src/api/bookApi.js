@@ -2,7 +2,7 @@ import axiosBase from './axiosBase';
 
 const bookApi = {
   get: (params) => {
-    const url = `/book/book_items/${params}/`;
+    const url = `/book_items/${params}/`;
     return axiosBase.get(url);
   },
 };

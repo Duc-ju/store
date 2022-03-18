@@ -49,7 +49,7 @@ function Header() {
     });
   }, []);
   useEffect(() => {
-    if (cart.current === null && user !== null) {
+    if (cart.current === null && user.current !== null) {
       dispatch(cartSlice.actions.setFetching());
       cartApi
         .getCart(user.current.cart)

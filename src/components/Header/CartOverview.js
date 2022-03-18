@@ -133,7 +133,7 @@ function ItemControl({ item }) {
     cartApi
       .deleteItem({
         cartId: cart.current.id,
-        data: { cartBookItem: item.id },
+        cartBookItemId: item.id,
       })
       .then((cart) => {
         dispatch(cartSlice.actions.setSuccess(cart));
@@ -164,7 +164,7 @@ function ItemControl({ item }) {
         .updateItem({
           cartId: cart.current.id,
           quantity: newQuantity,
-          cartBookItem: item.id,
+          cartBookItemId: item.id,
         })
         .then((cart) => {
           dispatch(cartSlice.actions.setSuccess(cart));
@@ -189,8 +189,8 @@ function ItemControl({ item }) {
     cartApi
       .updateItem({
         cartId: cart.current.id,
+        cartBookItemId: item.id,
         quantity: inputQuantity,
-        cartBookItem: item.id,
       })
       .then((cart) => {
         dispatch(cartSlice.actions.setSuccess(cart));

@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import jwt_decode from 'jwt-decode';
 import axiosBase from './axiosBase';
 const axiosClient = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/api`,
+  baseURL: `${process.env.REACT_APP_API_URL}/v1/api`,
   paramsSerializer: (params) => queryString.stringify(params),
 });
 

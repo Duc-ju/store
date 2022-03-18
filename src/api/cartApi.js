@@ -1,21 +1,25 @@
 import axiosClient from './axiosClient';
 
 const cartApi = {
+  addCart: (userId) => {
+    const url = `/users/${userId}/carts/`;
+    return axiosClient.post(url);
+  },
   addItemToCart: ({ cartId, ...params }) => {
-    const url = `order/carts/${cartId}/`;
+    const url = `/carts/${cartId}/cart_book_items/`;
     return axiosClient.post(url, params);
   },
   getCart: (cartId) => {
-    const url = `order/carts/${cartId}/`;
+    const url = `/carts/${cartId}/`;
     return axiosClient.get(url);
   },
-  deleteItem: ({ cartId, ...params }) => {
-    const url = `order/carts/${cartId}/`;
-    return axiosClient.delete(url, params);
+  deleteItem: ({ cartId, cartBookItemId }) => {
+    const url = `/carts/${cartId}/cart_book_items/${cartBookItemId}/`;
+    return axiosClient.delete(url);
   },
-  updateItem: ({ cartId, ...params }) => {
-    const url = `order/carts/${cartId}/`;
-    return axiosClient.put(url, params);
+  updateItem: ({ cartId, cartBookItemId, ...params }) => {
+    const url = `/carts/${cartId}/cart_book_items/${cartBookItemId}/`;
+    return axiosClient.patch(url, params);
   },
 };
 export default cartApi;
