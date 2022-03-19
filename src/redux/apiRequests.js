@@ -2,8 +2,6 @@ import userApi from '../api/userApi';
 import jwt_decode from 'jwt-decode';
 import userSlice from './userSlice';
 import noticeSlice from './noticeSlice';
-import cartApi from '../api/cartApi';
-import cartSlice from '../components/Header/cartSlice';
 export const handleLogin = async (data, dispatch, navigate) => {
   dispatch(userSlice.actions.loginStart());
   try {
@@ -22,7 +20,6 @@ export const handleLogin = async (data, dispatch, navigate) => {
         ...userInfo,
         ...userAuthen,
       };
-      console.log(user);
       window.localStorage.setItem('user', JSON.stringify(user));
       dispatch(userSlice.actions.loginSuccess(user));
       navigate('/');

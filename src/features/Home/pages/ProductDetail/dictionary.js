@@ -16,7 +16,10 @@ const dictionary = {
       discount: Math.round(item.discount * 100),
       images:
         item.images.length > 0
-          ? item.images
+          ? item.images.map((image) => {
+              image.image = process.env.REACT_APP_API_URL + image.image;
+              return image;
+            })
           : [
               {
                 id: 1,

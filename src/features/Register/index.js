@@ -15,14 +15,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import CheckBoxField from '../../components/CheckBoxField';
+import Header from '../../components/Header';
 import InputField from '../../components/InputField';
 import { handleRegister } from '../../redux/apiRequests';
 import { userSelector } from '../../redux/selectors';
+import { AppContainer } from '../Home/components/Container';
 const theme = createTheme();
 
 function Register() {
   const user = useSelector(userSelector);
-  console.log(user);
   const initialValues = {
     username: '',
     displayName: '',
@@ -65,112 +66,115 @@ function Register() {
     >
       {() => {
         return (
-          <ThemeProvider theme={theme}>
-            <Container component='main' maxWidth='xs' sx={{ marginTop: 8 }}>
-              <Card>
-                <CardContent>
-                  <CssBaseline />
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                      <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component='h1' variant='h5'>
-                      Đăng kí
-                    </Typography>
-                    {user.error && (
-                      <Alert
-                        severity='error'
-                        sx={{
-                          width: '100%',
-                        }}
-                      >
-                        <AlertTitle>{user.error}</AlertTitle>
-                      </Alert>
-                    )}
-                    <Form>
-                      <FastField
-                        name='username'
-                        component={InputField}
-                        label='Tài khoản'
-                        autoFocus
-                        autoComplete='username'
-                      />
-
-                      <FastField
-                        name='email'
-                        component={InputField}
-                        label='Email'
-                        type='email'
-                        autoComplete='email'
-                      />
-
-                      <FastField
-                        name='displayName'
-                        component={InputField}
-                        label='Tên hiển thị'
-                        autoComplete='display-name'
-                      />
-
-                      <FastField
-                        name='password'
-                        component={InputField}
-                        label='Mật khẩu'
-                        type='password'
-                        autoComplete='password'
-                      />
-                      <FastField
-                        name='rePassword'
-                        component={InputField}
-                        label='Nhập lại mật khẩu'
-                        type='password'
-                        autoComplete='re-password'
-                      />
-                      <FastField
-                        name='confirmTerm'
-                        component={CheckBoxField}
-                        label='Chấp nhận điều khoản'
-                        color='primary'
-                      />
-                      <LoadingButton
-                        type='submit'
-                        fullWidth
-                        variant='contained'
-                        sx={{ mt: 3, mb: 2 }}
-                        loading={user.isLoading}
-                        loadingPosition='end'
-                        endIcon={<LogoutIcon />}
-                      >
+          <AppContainer>
+            <Header />
+            <ThemeProvider theme={theme}>
+              <Container component='main' maxWidth='xs' sx={{ marginTop: 3 }}>
+                <Card>
+                  <CardContent>
+                    <CssBaseline />
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <LockOutlinedIcon />
+                      </Avatar>
+                      <Typography component='h1' variant='h5'>
                         Đăng kí
-                      </LoadingButton>
+                      </Typography>
+                      {user.error && (
+                        <Alert
+                          severity='error'
+                          sx={{
+                            width: '100%',
+                          }}
+                        >
+                          <AlertTitle>{user.error}</AlertTitle>
+                        </Alert>
+                      )}
+                      <Form>
+                        <FastField
+                          name='username'
+                          component={InputField}
+                          label='Tài khoản'
+                          autoFocus
+                          autoComplete='username'
+                        />
 
-                      <Grid container>
-                        <Grid item xs>
-                          <Link to='/forgot'>
-                            <Button sx={{ textTransform: 'none' }}>
-                              Quên mật khẩu?
-                            </Button>
-                          </Link>
+                        <FastField
+                          name='email'
+                          component={InputField}
+                          label='Email'
+                          type='email'
+                          autoComplete='email'
+                        />
+
+                        <FastField
+                          name='displayName'
+                          component={InputField}
+                          label='Tên hiển thị'
+                          autoComplete='display-name'
+                        />
+
+                        <FastField
+                          name='password'
+                          component={InputField}
+                          label='Mật khẩu'
+                          type='password'
+                          autoComplete='password'
+                        />
+                        <FastField
+                          name='rePassword'
+                          component={InputField}
+                          label='Nhập lại mật khẩu'
+                          type='password'
+                          autoComplete='re-password'
+                        />
+                        <FastField
+                          name='confirmTerm'
+                          component={CheckBoxField}
+                          label='Chấp nhận điều khoản'
+                          color='primary'
+                        />
+                        <LoadingButton
+                          type='submit'
+                          fullWidth
+                          variant='contained'
+                          sx={{ mt: 3, mb: 2 }}
+                          loading={user.isLoading}
+                          loadingPosition='end'
+                          endIcon={<LogoutIcon />}
+                        >
+                          Đăng kí
+                        </LoadingButton>
+
+                        <Grid container>
+                          <Grid item xs>
+                            <Link to='/forgot'>
+                              <Button sx={{ textTransform: 'none' }}>
+                                Quên mật khẩu?
+                              </Button>
+                            </Link>
+                          </Grid>
+                          <Grid item>
+                            <Link to='/login'>
+                              <Button sx={{ textTransform: 'none' }}>
+                                {'Đã có tài khoản? Đăng nhập ngay'}
+                              </Button>
+                            </Link>
+                          </Grid>
                         </Grid>
-                        <Grid item>
-                          <Link to='/login'>
-                            <Button sx={{ textTransform: 'none' }}>
-                              {'Đã có tài khoản? Đăng nhập ngay'}
-                            </Button>
-                          </Link>
-                        </Grid>
-                      </Grid>
-                    </Form>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Container>
-          </ThemeProvider>
+                      </Form>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Container>
+            </ThemeProvider>
+          </AppContainer>
         );
       }}
     </Formik>

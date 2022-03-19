@@ -27,6 +27,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { userSelector, cartSelector } from '../../redux/selectors';
+import { useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import userSlice from '../../redux/userSlice';
 import noticeSlice from '../../redux/noticeSlice';
@@ -56,7 +57,7 @@ const IconContainer = styled.div`
     margin-left: 24px !important;
   }
   > * > button {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
   }
 `;
 const NoticeContainer = styled.div`
@@ -171,6 +172,11 @@ function Notification(props) {
     </NoticeContainer>
   );
 }
+const pageName = {
+  '/login': 'Đăng nhập',
+  '/register': 'Đăng kí',
+  '/': 'Trang chủ',
+};
 function HeaderRef(props) {
   const {
     duplicate,
@@ -186,6 +192,7 @@ function HeaderRef(props) {
   const cart = useSelector(cartSelector);
   const userInfo = user.current;
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
   const handleLogout = () => {
     dispatch(userSlice.actions.logout());
     dispatch(
@@ -223,9 +230,11 @@ function HeaderRef(props) {
                 <HomeIcon fontSize='small' />
               </Link>
             </CoverLink>
-            <Typography color='text.primary'>Trang chủ</Typography>
+            <Typography color='text.primary'>
+              {pageName[pathname] || 'Xem sản phẩm'}
+            </Typography>
           </Breadcrumbs>
-          <PageName>Trang chủ</PageName>
+          <PageName>{pageName[pathname] || 'Xem sản phẩm'}</PageName>
         </div>
         <RightGroup>
           <TextField
@@ -300,7 +309,13 @@ function HeaderRef(props) {
                 <Link to='/register'>
                   <Button
                     startIcon={<AppRegistrationIcon />}
-                    sx={{ p: 0.3, textTransform: 'none' }}
+                    sx={{
+                      py: 0.3,
+                      px: 1,
+                      textTransform: 'none',
+                      color: pathname === '/register' ? 'white !important' : '',
+                    }}
+                    variant={pathname === '/register' ? 'contained' : ''}
                   >
                     Đăng kí
                   </Button>
@@ -308,7 +323,13 @@ function HeaderRef(props) {
                 <Link to='/login'>
                   <Button
                     startIcon={<LoginIcon />}
-                    sx={{ p: 0.3, textTransform: 'none' }}
+                    sx={{
+                      py: 0.3,
+                      px: 1,
+                      textTransform: 'none',
+                      color: pathname === '/login' ? 'white !important' : '',
+                    }}
+                    variant={pathname === '/login' ? 'contained' : ''}
                   >
                     Đăng nhập
                   </Button>

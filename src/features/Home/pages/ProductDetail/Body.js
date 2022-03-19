@@ -34,9 +34,10 @@ import dictionary from './dictionary';
 import { LoadingButton } from '@mui/lab';
 import cartApi from '../../../../api/cartApi';
 import { useSelector, useDispatch } from 'react-redux';
-import { userSelector, dispatch } from '../../../../redux/selectors';
+import { userSelector } from '../../../../redux/selectors';
 import noticeSlice from '../../../../redux/noticeSlice';
 import cartSlice from '../../../../components/Header/cartSlice';
+import { useNavigate } from 'react-router-dom';
 const RoundedWhiteContainer = styled.div`
   border-radius: 0.75rem;
   background-color: white;
@@ -142,36 +143,47 @@ function Body(props) {
   }, []);
   const dispatch = useDispatch();
   const user = useSelector(userSelector);
+  const navigate = useNavigate();
   const handleAddToCart = () => {
-    setAddingToCart(true);
-    cartApi
-      .addItemToCart({
-        cartId: user.current.cart,
-        bookItem: item.id,
-        quantity: quantity,
-      })
-      .then((cart) => {
-        setAddingToCart(false);
-        console.log(cart);
-        dispatch(
-          noticeSlice.actions.show({
-            title: 'Thêm sản phẩm vào giỏ hàng thành công',
-            type: 'success',
-          })
-        );
-        dispatch(cartSlice.actions.setSuccess(cart));
-        dispatch(cartSlice.actions.show());
-      })
-      .catch((e) => {
-        setAddingToCart(false);
-        console.log(e);
-        dispatch(
-          noticeSlice.actions.show({
-            title: 'Đã có lỗi xảy ra',
-            type: 'error',
-          })
-        );
-      });
+    if (user.current == null) {
+      navigate('/login');
+      dispatch(
+        noticeSlice.actions.show({
+          title: 'Đăng nhập để tiếp tục',
+          type: 'info',
+        })
+      );
+    } else {
+      setAddingToCart(true);
+      cartApi
+        .addItemToCart({
+          cartId: user.current.cart,
+          bookItem: item.id,
+          quantity: quantity,
+        })
+        .then((cart) => {
+          setAddingToCart(false);
+          console.log(cart);
+          dispatch(
+            noticeSlice.actions.show({
+              title: 'Thêm sản phẩm vào giỏ hàng thành công',
+              type: 'success',
+            })
+          );
+          dispatch(cartSlice.actions.setSuccess(cart));
+          dispatch(cartSlice.actions.show());
+        })
+        .catch((e) => {
+          setAddingToCart(false);
+          console.log(e);
+          dispatch(
+            noticeSlice.actions.show({
+              title: 'Đã có lỗi xảy ra',
+              type: 'error',
+            })
+          );
+        });
+    }
   };
 
   return (
@@ -204,8 +216,8 @@ function Body(props) {
                     sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                   >
                     <img
-                      src={`${process.env.REACT_APP_API_URL}${item.images[0].image}`}
-                      srcSet={`${process.env.REACT_APP_API_URL}${item.images[0].image}`}
+                      src={item.images[0].image}
+                      srcSet={item.images[0].image}
                       alt={item.header}
                       loading='lazy'
                     />
@@ -226,8 +238,8 @@ function Body(props) {
                       sx={{ borderRadius: '0.75rem', overflow: 'hidden' }}
                     >
                       <img
-                        src={`${process.env.REACT_APP_API_URL}${image.image}`}
-                        srcSet={`${process.env.REACT_APP_API_URL}${image.image}`}
+                        src={image.image}
+                        srcSet={image.image}
                         alt={item.header}
                         loading='lazy'
                       />
