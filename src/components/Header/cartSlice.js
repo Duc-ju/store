@@ -6,6 +6,7 @@ export default createSlice({
     current: null,
     isLoading: false,
     isShown: false,
+    isAddToCartPending: false,
   },
   reducers: {
     show: (state) => {
